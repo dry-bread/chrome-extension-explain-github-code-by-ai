@@ -36,7 +36,6 @@ bower_components
 build/Release
 
 # TypeScript编译后的JavaScript文件
-*.js
 *.js.map
 
 # 可选npm缓存目录
