@@ -3,6 +3,7 @@ import { Button, Dropdown, Input, makeStyles, Option, OptionOnSelectData, shorth
 import { useState, useEffect, useMemo } from "react";
 import { SaveRegular } from '@fluentui/react-icons';
 import { mapModelList, UrlKeyType } from "../common/utils";
+import React from "react";
 
 const useStyle = makeStyles({
     settingPage: {
@@ -65,6 +66,17 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
     const [key, setKey] = useState<string>('');
     const [model, setModel] = useState<string>('');
     const [status, setStatus] = useState<string>('');
+    const dropdownRef = React.useRef<HTMLButtonElement | null>(null);
+    const [optionWidth, setOptionWidth] = useState<number | string | undefined>(undefined);
+
+    // 当组件挂载或窗口大小改变时获取 Dropdown 的宽度
+    useEffect(() => {
+        if (dropdownRef.current) {
+            const width = dropdownRef.current.getBoundingClientRect().width;
+            setOptionWidth(width);
+            console.log('Dropdown 宽度:', width);
+        }
+    }, []);
 
     useEffect(() => {
         chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
@@ -86,6 +98,7 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
 
     const modelsList = useMemo(() => {
         const list = mapModelList(aiProduct);
+        setModel(list[0]);
         return list;
     }, [aiProduct]);
 
@@ -105,6 +118,7 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
                     className={styles.input}
                     value={model}
                     selectedOptions={[model]}
+                    ref={dropdownRef} // 将 ref 绑定到 Dropdown 上
                     onOptionSelect={(_e, data: OptionOnSelectData) => {
                         if (data.optionValue) {
                             setModel(data.optionValue as string);
@@ -113,7 +127,7 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
                 >
                     {
                         modelsList.map((model) => (
-                            <Option key={model} className={styles.option} value={model}>
+                            <Option key={model} className={styles.option} value={model} style={{ width: optionWidth }}>
                                 {model}
                             </Option>
                         ))

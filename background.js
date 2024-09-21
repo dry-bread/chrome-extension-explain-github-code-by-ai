@@ -14,7 +14,120 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
-const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+
+function fetchDataByChatgpt(model, apiKey, content) {
+  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.choices?.[0].message.content }));
+}
+
+function fetchDataBybaidu(model, apiKey, content) {
+  const aiApiUri = `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro?access_token=${apiKey}`;
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_output_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.result }));
+}
+
+function fetchDataByAli(model, apiKey, content) {
+  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.choices?.[0].message.content }));
+}
+
+function fetchDataBydoubao(model, apiKey, content) {
+  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.choices?.[0].message.content }));
+}
+
+function fetchDataBykimi(model, apiKey, content) {
+  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.choices?.[0].message.content }));
+}
+
+function fetchDataByOllama(model, apiKey, content) {
+  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  return fetch(aiApiUri, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: "user", content, }
+      ],
+      max_tokens: 1000
+    })
+  })
+    .then(response => response.json())
+    .then(result => ({ data: result.choices?.[0].message.content }));
+}
 
 // 从 storage 中获取 API Key 并发送请求
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -22,25 +135,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const content = message.content;
     chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
       const lastData = data.explaincodeextensionmodel;
-      if (lastData.product && lastData.product === 'chatgpt') {
-        fetch(aiApiUri, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${lastData.apiKey}`
-          },
-          body: JSON.stringify({
-            model: lastData.model,
-            messages: [{ role: "user", content, }
-            ],
-            max_tokens: 1000
-          })
-        })
-          .then(response => response.json())
-          .then(result => sendResponse({ data: result.choices?.[0].message.content }))
-          .catch(error => sendResponse({ error: error.message }));
+      if (lastData.product) {
+        switch (lastData.product) {
+          case 'chatgpt': fetchDataByChatgpt(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'baidu': fetchDataBybaidu(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'aili': fetchDataByAli(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'doubao': fetchDataBydoubao(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'kimi': fetchDataBykimi(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'ollama': fetchDataByOllama(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+        }
       } else {
-        sendResponse({ error: 'API Key not found' });
+        sendResponse({ error: '发送请求失败，请选择一个大模型产品' });
       }
     });
     return true; // 表示响应是异步的
