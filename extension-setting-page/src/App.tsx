@@ -1,7 +1,7 @@
 import { Stack } from '@fluentui/react';
 import './App.css'
 import { makeStyles, Dropdown, OptionOnSelectData, Option } from "@fluentui/react-components";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { AiModeSetting } from './llmModelSetting/AiModeSetting';
 import { mapModelName, options, UrlKeyType } from './common/utils';
@@ -80,7 +80,17 @@ const applyTheme = (isDarkMode: boolean) => {
 
 const App: React.FC = () => {
   const [aiProduct, setAIProduct] = useState<UrlKeyType | undefined>(undefined);
+  const dropdownRef = React.useRef<HTMLButtonElement | null>(null);
+  const [optionWidth, setOptionWidth] = useState<number | string | undefined>(undefined);
 
+  // 当组件挂载或窗口大小改变时获取 Dropdown 的宽度
+  useEffect(() => {
+    if (dropdownRef.current) {
+      const width = dropdownRef.current.getBoundingClientRect().width;
+      setOptionWidth(width);
+      console.log('Dropdown 宽度:', width);
+    }
+  }, []);
   // 加载已保存的 API Key
   const styles = useStyle();
   const modelCategory = React.useMemo(() => {
@@ -93,7 +103,6 @@ const App: React.FC = () => {
   const selectedOptions = React.useMemo(() => {
     if (aiProduct) {
       return [aiProduct];
-
     }
     return [];
   }, [aiProduct]);
@@ -135,6 +144,7 @@ const App: React.FC = () => {
         <Dropdown
           className={styles.input}
           value={modelCategory}
+          ref={dropdownRef} // 将 ref 绑定到 Dropdown 上
           selectedOptions={selectedOptions}
           onOptionSelect={(_e, data: OptionOnSelectData) => {
             if (data.optionValue) {
@@ -143,7 +153,7 @@ const App: React.FC = () => {
           }}
         >
           {options.map((option) => (
-            <Option key={option} className={styles.option} value={option}>
+            <Option key={option} className={styles.option} value={option} style={{ width: optionWidth }}>
               {mapModelName(option)}
             </Option>
           ))}

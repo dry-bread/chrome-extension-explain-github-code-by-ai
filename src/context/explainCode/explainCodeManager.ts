@@ -46,10 +46,9 @@ export class ExplainCodeManager {
         this._observerInView = new IntersectionObserver(
             (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
+                    if (entry.isIntersecting || entry.target.localName === 'textarea') {
                         // 处理该元素，比如懒加载内容或处理新的 <code> 元素
                         this.explainCode(entry.target as Element);
-
                         // 如果你只想处理一次，可以在处理后停止观察
                         observer.unobserve(entry.target);
                         // 监听变动

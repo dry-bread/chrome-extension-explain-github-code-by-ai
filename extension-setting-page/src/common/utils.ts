@@ -17,7 +17,7 @@ export function mapModelList(model: UrlKeyType): string[] {
     switch (model) {
         case 'chatgpt': return ['gpt-3.5-turbo'];
         case 'aili': return ['gpt-3.5-turbo'];
-        case 'baidu': return ['gpt-3.5-turbo'];
+        case 'baidu': return ['ERNIE-4.0-8K', 'Gemma-7B-it', 'Meta-Llama-3-70B-Instruct'];
         case 'doubao': return ['gpt-3.5-turbo'];
         case 'kimi': return ['gpt-3.5-turbo'];
         case 'ollama': return ['gpt-3.5-turbo'];
