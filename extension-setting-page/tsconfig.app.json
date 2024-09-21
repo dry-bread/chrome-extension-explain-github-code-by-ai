@@ -20,5 +20,15 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "theme": {
+    "light": {
+      "backgroundColor": "#ffffff",
+      "textColor": "#000000"
+    },
+    "dark": {
+      "backgroundColor": "#1e1e1e", 
+      "textColor": "#ffffff"
+    }
+  }
 }

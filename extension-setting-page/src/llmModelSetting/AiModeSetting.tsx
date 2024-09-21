@@ -1,8 +1,7 @@
 import { Stack } from "@fluentui/react";
-import { Button, Dropdown, Input, makeStyles, Option, OptionOnSelectData } from "@fluentui/react-components";
-import { useState } from "react";
+import { Button, Dropdown, Input, makeStyles, Option, OptionOnSelectData, shorthands } from "@fluentui/react-components";
+import { useState, useEffect, useMemo } from "react";
 import { SaveRegular } from '@fluentui/react-icons';
-import React from "react";
 import { mapModelList, UrlKeyType } from "../common/utils";
 
 const useStyle = makeStyles({
@@ -24,11 +23,12 @@ const useStyle = makeStyles({
         marginRight: '10px',
     },
     input: {
-        border: '1px #d6d6d6 solid',
-        borderBottomColor: '#616161',
-        backgroundColor: 'white',
+        border: '1px var(--border-color) solid',
+        borderBottomColor: 'var(--border-bottom-color)',
+        backgroundColor: 'var(--input-background-color)',
+        color: 'var(--text-color)',
         width: '100%',
-        borderRadius: '5px',
+        ...shorthands.borderRadius('5px'),
         minWidth: '1px',
         fontSize: '16px',
         lineHeight: '20px',
@@ -37,19 +37,20 @@ const useStyle = makeStyles({
     button: {
         backgroundColor: '#1f883d',
         color: 'white',
-        borderRadius: '5px',
+        ...shorthands.borderRadius('5px'),
         height: '28px',
     },
     option: {
-        backgroundColor: 'white',
+        backgroundColor: 'var(--option-background-color)',
+        color: 'var(--text-color)',
         fontSize: '14px',
         lineHeight: '18px',
         padding: '3px',
         width: 'fit-content',
         minHeight: '30px',
         '&:hover': {
-            backgroundColor: 'lightgray',
-            border: '1px black soild',
+            backgroundColor: 'var(--option-hover-background-color)',
+            border: '1px var(--option-hover-border-color) solid',
         },
     }
 });
@@ -65,7 +66,7 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
     const [model, setModel] = useState<string>('');
     const [status, setStatus] = useState<string>('');
 
-    React.useEffect(() => {
+    useEffect(() => {
         chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
             const lastData = data.explaincodeextensionmodel;
             if (lastData.product && lastData.product === aiProduct) {
@@ -83,12 +84,12 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
         });
     }, [aiProduct]);
 
-    const modelsList = React.useMemo(() => {
+    const modelsList = useMemo(() => {
         const list = mapModelList(aiProduct);
         return list;
     }, [aiProduct]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (modelsList.length && !model.length) {
             setModel(modelsList[0]);
         }
