@@ -5,6 +5,7 @@ import { Stack } from '@fluentui/react';
 import { DismissRegular, SearchRegular } from '@fluentui/react-icons';
 import React from "react";
 import { createUseStyles } from 'react-jss';
+import { EXPLAINCODEEXTENSIONPANLEID } from "../../common/contants";
 // 定义样式
 const useStyles = createUseStyles({
     panel: {
@@ -72,7 +73,7 @@ export const AskAIPanel: React.FC = () => {
     >
         <Stack horizontal horizontalAlign="end" className={styles.input}>
             <Stack.Item grow style={{ height: '100%' }}>
-                <Textarea value={inputContent} onChange={onChangeInput} className={styles.textArea} />
+                <Textarea value={inputContent} onChange={onChangeInput} className={styles.textArea} id={EXPLAINCODEEXTENSIONPANLEID} />
             </Stack.Item>
             <Stack.Item disableShrink>
                 <Button
