@@ -5,9 +5,10 @@ import { getAllCodeElementList } from '../../utils/queryCodeDomHelper';
 export class ExplainCodeManager {
     private _popoverMessage$ = new BehaviorSubject<string | undefined>(undefined);
     private _enableLoad$ = new BehaviorSubject<boolean>(false);
-    private _codeBlocksSet = new Set<Element>();// key,block
+    private _codeBlocksMap = new Map<Element, Element>();// target element, explaination element
     private _allCodeTargetList$ = new BehaviorSubject<Element[]>([]);
     private _observerInView: IntersectionObserver | undefined;
+    private _observerContentChange: MutationObserver | undefined;
     private _observerAddDom: MutationObserver | undefined;
 
     constructor() {
@@ -20,12 +21,23 @@ export class ExplainCodeManager {
             }
         });
     }
+
+    private registerCodeElementContentChange(element: Element) {
+        if (this._observerContentChange) {
+            this._observerContentChange.observe(element, {
+                attributes: true,    // 监控属性（如 'value' 属性）的变化
+                characterData: true, // 监控文本内容的变化
+                subtree: true        // 监控子树的变化
+            });
+        }
+    }
+
     private async explainCode(block: Element) {
         if (block.textContent && block.textContent.trim().length > 0) {
             const explanation = await fetchExplainCodeAiResponse(block.textContent!);
             if (explanation) {
                 const explainEle = insertCodeAsideBlock(block, explanation);
-                this._codeBlocksSet.add(explainEle);
+                this._codeBlocksMap.set(block, explainEle);
             }
         }
     }
@@ -40,12 +52,27 @@ export class ExplainCodeManager {
 
                         // 如果你只想处理一次，可以在处理后停止观察
                         observer.unobserve(entry.target);
+                        // 监听变动
+                        this.registerCodeElementContentChange(entry.target as Element);
                     }
                 });
             }, {
             root: null, // 使用浏览器视口作为根
             rootMargin: '20px', // 视口边缘的扩展区域
             threshold: 0.1 // 目标元素进入视口 10% 时触发
+        });
+
+        // 监听代码（程序）更改
+        this._observerContentChange = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'characterData' || mutation.type === 'attributes') {
+                    const target = mutation.target as Element;
+                    const explainDiv = this._codeBlocksMap.get(target);
+                    explainDiv?.remove();
+                    this._codeBlocksMap.delete(target);
+                    this.explainCode(target);
+                }
+            });
         });
 
         const codeBlocks = getAllCodeElementList();
@@ -81,12 +108,12 @@ export class ExplainCodeManager {
 
 
     private clearAllCodeBlock() {
-        const allElements = this._codeBlocksSet.values();
-        Array.from(allElements).forEach((element) => {
-            if (element) {
-                element.remove();
+        const allElements = this._codeBlocksMap.entries()
+        Array.from(allElements).forEach(([target, explainDiv]) => {
+            if (explainDiv) {
+                explainDiv.remove();
             }
-            this._codeBlocksSet.delete(element);
+            this._codeBlocksMap.delete(target);
         });
         this._observerInView?.disconnect();
         this._observerAddDom?.disconnect();
