@@ -34,6 +34,10 @@ export class ExplainCodeManager {
 
     private async explainCode(block: Element) {
         if (block.textContent && block.textContent.trim().length > 0) {
+            const hasContent = this._codeBlocksMap.get(block);
+            if (hasContent !== undefined) {
+                return;
+            }
             const explanation = await fetchExplainCodeAiResponse(block.textContent!);
             if (explanation && typeof explanation === 'string') {
                 const explainEle = insertCodeAsideBlock(block, explanation);
@@ -67,7 +71,7 @@ export class ExplainCodeManager {
         // 监听代码（程序）更改
         this._observerContentChange = new MutationObserver((mutations) => {
             mutations.forEach(mutation => {
-                if (mutation.type === 'characterData' || mutation.type === 'attributes') {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                     const target = mutation.target as Element;
                     const explainDiv = this._codeBlocksMap.get(target);
                     explainDiv?.remove();
