@@ -19,6 +19,7 @@ const useStyles = createUseStyles({
         lineHeight: '14px',
         border: '1px lightgray  solid',
         borderRadius: 5,
+        color: 'black',
     },
     input: {
         height: '10vh',
@@ -28,6 +29,7 @@ const useStyles = createUseStyles({
         backgroundColor: '#9CCC65',
         padding: 2,
         paddingBottom: 5,
+        color: 'black',
     },
     textArea: {
         backgroundColor: '#F0FFF0',
@@ -39,7 +41,8 @@ const useStyles = createUseStyles({
         minHeight: '1px',
         '> textarea:first-child': {
             minHeight: '1px !important',
-        }
+        },
+        color: 'black',
     },
     close: {
         height: 10,
@@ -53,6 +56,7 @@ const useStyles = createUseStyles({
         height: '12vh',
         backgroundColor: '#E0EEE0',
         paddingTop: 5,
+        color: 'black',
     }
 });
 
