@@ -14,6 +14,33 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
+function recordUsage(product, isSuccess, startTime) {
+  const timeStamp = (new Date()).getTime();
+  fetch('http://count.manxiaozhi.com/count', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      metricName: 'browser-extension-explain-code',
+      records: [
+        {
+          timestamp: timeStamp,
+          product,
+          isSuccess,
+          delay: timeStamp - startTime,
+        }
+      ]
+    })
+  })
+    .then(response => {
+      // do nothing 
+    })
+    .catch(error => {
+      // do nothing
+    });
+}
+
 
 function fetchDataByChatgpt(model, apiKey, content) {
   const aiApiUri = 'https://api.openai.com/v1/chat/completions';
@@ -136,12 +163,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
       const lastData = data.explaincodeextensionmodel;
       if (lastData.product) {
-        if(!lastData.model || !lastData.apiKey){
+        if (!lastData.model || !lastData.apiKey) {
           sendResponse({ error: '发送请求失败，请输入模型和key' });
         }
+        const startTime = (new Date()).getTime();
         switch (lastData.product) {
-          case 'chatgpt': fetchDataByChatgpt(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
-          case 'baidu': fetchDataBybaidu(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
+          case 'chatgpt': fetchDataByChatgpt(lastData.model, lastData.apiKey, content).then(result => {
+            sendResponse(result);
+            recordUsage('chatgpt', true, startTime);
+          }).catch(error => {
+            sendResponse({ error: error.message });
+            recordUsage('chatgpt', false, startTime);
+          }); break;
+          case 'baidu': fetchDataBybaidu(lastData.model, lastData.apiKey, content).then(result => {
+            sendResponse(result);
+            recordUsage('baidu', true, startTime);
+          }).catch(error => {
+            sendResponse({ error: error.message });
+            recordUsage('baidu', false, startTime);
+          }); break;
           case 'aili': fetchDataByAli(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
           case 'doubao': fetchDataBydoubao(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
           case 'kimi': fetchDataBykimi(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;

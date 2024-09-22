@@ -1,6 +1,6 @@
 
 export type UrlKeyType = 'chatgpt' | 'baidu' | 'aili' | 'doubao' | 'kimi' | 'ollama';
-export const options: UrlKeyType[] = ['chatgpt', 'baidu', 'aili', 'doubao', 'kimi', 'ollama'];
+export const options: UrlKeyType[] = ['chatgpt', 'baidu'];//, 'aili', 'doubao', 'kimi', 'ollama'
 
 export function mapModelName(model: UrlKeyType) {
     switch (model) {
