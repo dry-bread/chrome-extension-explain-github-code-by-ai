@@ -13,12 +13,13 @@
 
 - 自动解释 Github 页面的代码块部分
 
-![pic1](https://github.com/user-attachments/assets/0c968d3c-20ea-4d3a-b809-27bd2a15cd8f)
+![image](https://github.com/user-attachments/assets/96087bde-ca90-42b4-9236-457861596a13)
+
 
 
 - 自动解释 Github 中的代码文件
 
-![pic2](https://github.com/user-attachments/assets/5ff7332c-17a1-4b21-8e75-cd034eec3fe1)
+![image](https://github.com/user-attachments/assets/408496d8-9f44-4285-821d-767701a29921)
 
 
 - 通过 AI 助手解释选中的代码或文本
@@ -52,5 +53,8 @@
 
 
 6. 打开一个 Github 页面，你可以在右下角看到一个绿色的按钮，点击按钮后，插件会自动翻译页面内的代码部分。
+
+![image](https://github.com/user-attachments/assets/bdba09ff-3247-4021-a593-07c2958e5956)
+
 
 7. 你也可以选中文本并右键，点击`查询 AI 助手`来使用该插件。
