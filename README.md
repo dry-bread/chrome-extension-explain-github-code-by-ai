@@ -1,29 +1,56 @@
-## Chrome extension: github code explanation
+# Github 代码阅读神器
 
-This is a Chrome browser extension, generally used in github.
+`github code explanation`是一个 Chrome / Edge 浏览器插件，可以自动检测到 Github 页面内的代码，通过大模型解释并将返回结果展示在代码下方。
 
-Supports multiple AI models, including ChatGPT, Baidu Wenxin Yiyan, Alitong Yiqianwen, and locally deployed large model Ollama.
+用户可以通过该插件快速阅读代码，减少编程语言的学习成本，理解各部分代码的目的和逻辑。
 
-When used, it will automatically detect the part of the code in the current browser view, send a request to the large language model, and get the explanation of this code. Help users reduce the cost of language learning and quickly understand the role and content of the displayed code
+当前插件支持的模型：
 
-### It can support：
-- Automatically identify code blocks on supported websites such as GitHub
-![image](https://github.com/user-attachments/assets/af0ee824-befa-4222-9888-9e4fc2abf97e)
-![image](https://github.com/user-attachments/assets/86a836c4-1b8a-497b-94c9-862786962915)
+- ChatGPT 3.5
+- 文心一言
 
-- Use AI to explain the selected code
-![image](https://github.com/user-attachments/assets/acb8b631-2fd0-43b5-9470-ca2e5e9c7595)
-![image](https://github.com/user-attachments/assets/09aeaa86-3212-4c01-9f17-a4067f674f43)
-- the green card alose allow users to ask AI questions about the code
+## 它能做什么
 
-## How to use this extension
-1. Download this repo.
-2. Open chrome extension setting page `chrome://extensions/`
-3. Click ‘Load the unpacked extension’， choose the folder which the repo downloaded(chrome-extension-explain-github-code-by-ai)
-4. ![image](https://github.com/user-attachments/assets/2a1c95e5-b752-4eca-855e-452df9b16ad7)
-5. make sure this extension can be show in you browser top. you can follow step1 -> step2 -> step3.
-6. ![image](https://github.com/user-attachments/assets/1dcd99d6-1631-4a4d-b533-7a6f890e5110)
-7. click extension icon, then choose product,model, and fill your key for related product. save it.
-8. ![image](https://github.com/user-attachments/assets/98ac9bb2-f20d-4dd6-b2bd-00d470effbe1)
-9. ok, you can use this extension right now.
-10. open [github](https://github.com/), browse the code you instrested, hope this extension can help you.
+- 自动解释 Github 页面的代码块部分
+
+![pic1](https://github.com/user-attachments/assets/0c968d3c-20ea-4d3a-b809-27bd2a15cd8f)
+
+
+- 自动解释 Github 中的代码文件
+
+![pic2](https://github.com/user-attachments/assets/5ff7332c-17a1-4b21-8e75-cd034eec3fe1)
+
+
+- 通过 AI 助手解释选中的代码或文本
+
+![pic3](https://github.com/user-attachments/assets/4b9c8027-6569-47fb-923a-c927debfc456)
+
+
+- 支持用户通过悬浮窗直接和 AI 对话
+
+![pic4](https://github.com/user-attachments/assets/e183b2dc-5caf-4653-8f67-4a03477a6b2f)
+
+
+## 如何使用这个插件
+
+1. 下载并解压这个仓库，或者从 [Release](https://github.com/dry-bread/chrome-extension-explain-github-code-by-ai/releases/download/chrome-extension/explainGithubCode.zip) 下载并解压安装包。
+2. 打开浏览器扩展界面：`chrome://extensions/`
+3. 点击 `加载解压缩的扩展`，并加载刚刚解压好的文件夹。
+
+![pic5](https://github.com/user-attachments/assets/6b96a675-53b1-40a2-b438-edf41fc67176)
+
+
+4. 确保你的扩展可以在浏览器顶部展示（如图）
+
+<img width="319" alt="pic6" src="https://github.com/user-attachments/assets/7455ff7e-137e-410a-9b35-4437d5078ae6">
+
+
+
+5. 初次使用需要点击扩展，选择产品和模型，并配置对应的 key 后，点击保存配置。
+
+![pic7](https://github.com/user-attachments/assets/0004a0f4-e268-45de-aa61-23f0f31aff06)
+
+
+6. 打开一个 Github 页面，你可以在右下角看到一个绿色的按钮，点击按钮后，插件会自动翻译页面内的代码部分。
+
+7. 你也可以选中文本并右键，点击`查询 AI 助手`来使用该插件。
