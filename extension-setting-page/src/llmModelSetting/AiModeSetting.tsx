@@ -138,7 +138,7 @@ export const AiModeSetting: React.FC<AiModeSettingProps> = (props) => {
         </Stack>
         <Stack tokens={{ childrenGap: 2 }} horizontalAlign='start' className={styles.item} horizontal verticalAlign='center'>
             <Stack.Item disableShrink className={styles.lable}>
-                输入Key:
+                输入{aiProduct === 'ollama' ? '地址' : 'Key'}:
             </Stack.Item>
             <Stack.Item grow>
                 <Input

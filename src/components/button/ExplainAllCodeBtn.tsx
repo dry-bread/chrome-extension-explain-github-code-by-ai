@@ -3,7 +3,7 @@ import { createUseStyles } from 'react-jss';
 import React from 'react';
 import { useExplainCodeContext } from "../../context/explainCode/contextManager";
 import { useObservableValue } from "../../context/rxjsHelper";
-import { Button } from "@fluentui/react-components";
+import { Button, Popover, PopoverSurface, PopoverTrigger } from "@fluentui/react-components";
 
 // 定义样式
 const useStyles = createUseStyles({
@@ -26,12 +26,21 @@ const useStyles = createUseStyles({
             border: '1px black soild',
         },
     },
+    popover: {
+        backgroundColor: 'white',
+        color: 'black',
+        padding: '10px',
+        border: '1px solid lightgray',
+        borderRadius: 5,
+    }
 });
 
 export const ExplainAllCodeBtn: React.FC = () => {
     const styles = useStyles();
     const { explainCodeManager } = useExplainCodeContext();
+    const [open, setOpen] = React.useState<boolean>(false);
     const enableLoad = useObservableValue(explainCodeManager.enableLoad$, () => explainCodeManager.enableLoad);
+    const popoverMessage = useObservableValue(explainCodeManager.popoverMessage$, () => explainCodeManager.popoverMessage);
     const buttonText = React.useMemo(() => {
         switch (enableLoad) {
             case true: return '移除解释';
@@ -41,13 +50,32 @@ export const ExplainAllCodeBtn: React.FC = () => {
 
     const onClick = React.useCallback(() => {
         explainCodeManager.triggerExpalinCode();
-    }, [explainCodeManager])
+    }, [explainCodeManager]);
 
-    return <Button
-        id={EXPLAINCODEBTNID}
-        onClick={onClick}
-        className={styles.button}
-    >{buttonText}</Button>;
+    React.useEffect(() => {
+        if (popoverMessage && popoverMessage.length) {
+            console.log('popoverMessage');
+            setOpen(true);
+        }
+    }, [popoverMessage]);
+
+    return <Popover
+        withArrow open={open}
+        onOpenChange={(e, data) => {
+            if (data.open) {
+                setTimeout(() => setOpen(false), 3000);
+            }
+        }}>
+        <PopoverTrigger><Button
+            id={EXPLAINCODEBTNID}
+            onClick={onClick}
+            className={styles.button}
+        >{buttonText}</Button></PopoverTrigger>
+        <PopoverSurface className={styles.popover}>
+            {popoverMessage}
+        </PopoverSurface>
+
+    </Popover>;
 }
 
 export default ExplainAllCodeBtn;

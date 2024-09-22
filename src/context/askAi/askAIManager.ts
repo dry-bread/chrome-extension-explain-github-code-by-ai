@@ -15,9 +15,16 @@ export class AskAIManager {
         const messageStr = this._currentInputContent$.value;
         try {
             const answer = await fetchAskAiResponse(messageStr);
-            this._responseStr$.next(answer);
-            this._loadStatus$.next('loaded');
-            this._responseErr$.next(undefined);
+            if (typeof answer === 'string') {
+                this._responseStr$.next(answer);
+                this._loadStatus$.next('loaded');
+                this._responseErr$.next(undefined);
+            } else if (typeof answer === 'object' && answer.error) {
+                this._responseStr$.next(`加载失败：${answer.error}`);
+                this._loadStatus$.next('ready');
+                this._responseErr$.next(`加载失败：${answer.error}`);
+            }
+
         } catch (err) {
             this._responseErr$.next(String(err));
             this._loadStatus$.next('ready');
@@ -31,7 +38,7 @@ export class AskAIManager {
     public get isShowWindow$(): Observable<boolean> {
         return this._isShowWindow$;
     }
-    
+
 
     public get loadStatu(): 'ready' | 'loading' | 'loaded' {
         return this._loadStatus$.value;

@@ -3,14 +3,15 @@ import { v4 as uuid } from 'uuid';
 
 
 
-async function fetchAiResponse(code: string, agents: { role: string, content: string }[] = []): Promise<string | undefined> {
+async function fetchAiResponse(code: string, agents: { role: string, content: string }[] = []): Promise<string | { error: string } | undefined> {
     const promise = new Promise<string>((resolve) => {
         chrome.runtime.sendMessage({
             action: 'fetchAIResponse',
             content: code,
         }, function (response) {
             if (response.error) {
-                resolve(response.error);
+                const newError = { error: `${response.error} 请检查是否打开vpn或者配置了正确的key` }
+                resolve({ ...response, error: newError });
             } else {
                 resolve(response.data);
             }
@@ -20,12 +21,12 @@ async function fetchAiResponse(code: string, agents: { role: string, content: st
     return promise;
 }
 
-export async function fetchExplainCodeAiResponse(code: string): Promise<string | undefined> {
-    const response = await fetchAiResponse(`精简的解释一下下面代码的作用: \n\n ${code}`, [{ role: "assistant", content: "你是一名程序员，能够向用户解释代码" }]);
+export async function fetchExplainCodeAiResponse(code: string): Promise<string | { error: string } | undefined> {
+    const response = await fetchAiResponse(`请先总结下列代码的作用，然后再详细解释代码的各个部分: \n\n ${code}`, [{ role: "assistant", content: "你是一名程序员，能够向用户解释代码" }]);
     return response;
 }
 
-export async function fetchAskAiResponse(code: string): Promise<string | undefined> {
+export async function fetchAskAiResponse(code: string): Promise<string | { error: string } | undefined> {
     const response = await fetchAiResponse(code);
     return response;
 }

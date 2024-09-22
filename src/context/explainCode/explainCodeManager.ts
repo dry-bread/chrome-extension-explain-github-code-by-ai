@@ -35,9 +35,12 @@ export class ExplainCodeManager {
     private async explainCode(block: Element) {
         if (block.textContent && block.textContent.trim().length > 0) {
             const explanation = await fetchExplainCodeAiResponse(block.textContent!);
-            if (explanation) {
+            if (explanation && typeof explanation === 'string') {
                 const explainEle = insertCodeAsideBlock(block, explanation);
                 this._codeBlocksMap.set(block, explainEle);
+            }
+            if (explanation && typeof explanation === 'object') {
+                this._popoverMessage$.next(explanation.error);
             }
         }
     }
