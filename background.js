@@ -54,7 +54,7 @@ function fetchDataBybaidu(model, apiKey, content) {
 }
 
 function fetchDataByAli(model, apiKey, content) {
-  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  const aiApiUri = 'https://dashscope.aliyuncs.com/compatible-mode/v1';
   return fetch(aiApiUri, {
     method: 'POST',
     headers: {
@@ -73,7 +73,7 @@ function fetchDataByAli(model, apiKey, content) {
 }
 
 function fetchDataBydoubao(model, apiKey, content) {
-  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  const aiApiUri = 'https://ark.cn-beijing.volces.com/api/v3';
   return fetch(aiApiUri, {
     method: 'POST',
     headers: {
@@ -92,7 +92,7 @@ function fetchDataBydoubao(model, apiKey, content) {
 }
 
 function fetchDataBykimi(model, apiKey, content) {
-  const aiApiUri = 'https://api.openai.com/v1/chat/completions';
+  const aiApiUri = 'https://api.moonshot.cn/v1';
   return fetch(aiApiUri, {
     method: 'POST',
     headers: {
@@ -136,6 +136,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
       const lastData = data.explaincodeextensionmodel;
       if (lastData.product) {
+        if(!lastData.model || !lastData.apiKey){
+          sendResponse({ error: '发送请求失败，请输入模型和key' });
+        }
         switch (lastData.product) {
           case 'chatgpt': fetchDataByChatgpt(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
           case 'baidu': fetchDataBybaidu(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
@@ -145,7 +148,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           case 'ollama': fetchDataByOllama(lastData.model, lastData.apiKey, content).then(result => sendResponse(result)).catch(error => sendResponse({ error: error.message })); break;
         }
       } else {
-        sendResponse({ error: '发送请求失败，请选择一个大模型产品' });
+        sendResponse({ error: '发送请求失败，请选择大模型产品' });
       }
     });
     return true; // 表示响应是异步的

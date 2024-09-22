@@ -1,6 +1,6 @@
 import { Stack } from '@fluentui/react';
 import './App.css'
-import { makeStyles, Dropdown, OptionOnSelectData, Option } from "@fluentui/react-components";
+import { makeStyles, Dropdown, OptionOnSelectData, Option, Link } from "@fluentui/react-components";
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { AiModeSetting } from './llmModelSetting/AiModeSetting';
@@ -17,6 +17,10 @@ const useStyle = makeStyles({
     fontSize: '16px',
     lineHeight: '20px',
     color: 'var(--text-color)',
+    width: '100%'
+  },
+  link: {
+    color: 'blue',
   },
   item: {
     width: '100%',
@@ -110,10 +114,10 @@ const App: React.FC = () => {
   React.useEffect(() => {
     chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
       const lastData = data.explaincodeextensionmodel;
-      if (lastData.product) {
+      if (lastData.product && options.includes(lastData.product)) {
         setAIProduct(lastData.product);
       } else {
-        setAIProduct('chatgpt');
+        setAIProduct(options[0]);
       }
     });
   }, []);
@@ -137,7 +141,19 @@ const App: React.FC = () => {
   }, []);
 
   return (<Stack verticalAlign='start' horizontalAlign='start' className={styles.settingPage} tokens={{ childrenGap: 20 }}>
-    <Stack.Item className={styles.title}>配置AI大语言模型</Stack.Item>
+    <Stack className={styles.title} horizontal horizontalAlign='space-between'>
+      <Stack.Item>配置AI大语言模型</Stack.Item>
+      <Stack.Item className={styles.link}>
+        <Link
+          onClick={() => {
+            chrome.tabs.create({ url: "https://blog.manxiaozhi.com/articles/2024/09/22/1726999187806.html" })
+          }}
+          href="https://blog.manxiaozhi.com/articles/2024/09/22/1726999187806.html"
+        >
+          如何配置？
+        </Link>
+      </Stack.Item>
+    </Stack>
     <Stack horizontalAlign='start' horizontal className={styles.item}>
       <Stack.Item disableShrink className={styles.lable}>选择产品: </Stack.Item>
       <Stack.Item grow>
