@@ -22,7 +22,7 @@ async function fetchAiResponse(code: string, agents: { role: string, content: st
 }
 
 export async function fetchExplainCodeAiResponse(code: string): Promise<string | { error: string } | undefined> {
-    const response = await fetchAiResponse(`请先总结下列代码的作用，然后再详细解释代码的各个部分: \n\n ${code}`, [{ role: "assistant", content: "你是一名程序员，能够向用户解释代码" }]);
+    const response = await fetchAiResponse(`用中文请先总结下列代码的作用，然后再详细解释代码中的各个部分（代码中的部分的定义：共同发挥某个作用的一个模块）（对于每个解释的部分，被解释的代码需要用方括号先列在解释内容的前面，被解释的代码内容用代码原文）. \n\n ${code}`, [{ role: "assistant", content: "你是一名程序员，能够向用户解释代码" }]);
     return response;
 }
 

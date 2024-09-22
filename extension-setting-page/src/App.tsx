@@ -112,6 +112,7 @@ const App: React.FC = () => {
   }, [aiProduct]);
 
   React.useEffect(() => {
+    setAIProduct(options[0]);
     chrome.storage.sync.get('explaincodeextensionmodel', function (data) {
       const lastData = data.explaincodeextensionmodel;
       if (lastData.product && options.includes(lastData.product)) {
