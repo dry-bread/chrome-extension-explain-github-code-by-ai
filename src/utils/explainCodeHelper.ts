@@ -1,6 +1,4 @@
-import { v4 as uuid } from 'uuid';
-
-
+import {v4 as uuid} from 'uuid';
 
 
 async function fetchAiResponse(code: string, agents: { role: string, content: string }[] = []): Promise<string | { error: string } | undefined> {
@@ -10,8 +8,8 @@ async function fetchAiResponse(code: string, agents: { role: string, content: st
             content: code,
         }, function (response) {
             if (response.error) {
-                const newError = { error: `${response.error} 请检查是否打开vpn或者配置了正确的key` }
-                resolve({ ...response, error: newError });
+                const newError = {error: `${response.error} 请检查是否打开vpn或者配置了正确的key`}
+                resolve({...response, error: newError});
             } else {
                 resolve(response.data);
             }
@@ -22,7 +20,12 @@ async function fetchAiResponse(code: string, agents: { role: string, content: st
 }
 
 export async function fetchExplainCodeAiResponse(code: string): Promise<string | { error: string } | undefined> {
-    const response = await fetchAiResponse(`用中文请先总结下列代码的作用，然后再详细解释代码中的各个部分（代码中的部分的定义：共同发挥某个作用的一个模块）（对于每个解释的部分，被解释的代码需要用方括号先列在解释内容的前面，被解释的代码内容用代码原文）. \n\n ${code}`, [{ role: "assistant", content: "你是一名程序员，能够向用户解释代码" }]);
+    const response = await fetchAiResponse("Assuming that you are a chief software engineer, please explain the following code in detail in Chinese.\n" +
+        "Requirement: First, briefly summarize the functions of the code file and the functions it contains, and introduce the external libraries/third-party packages/header files introduced in the code (if any), the macro definitions in the code (if any), and the functions and implementation methods of each function in the code in order.\n" +
+        "Please give the code analysis results in markdown format: summarize the functions and functions of the code file, the structure of the code file, give other files associated with the code file (if any) according to the introduced external libraries/third-party packages/header files, the macro definitions of the code (if any), and introduce the functions, inputs, outputs and implementation methods of each function respectively (format: [interpreted function definition code]: main function of the function \\br <function parameters>: function parameter definition \\br function implementation method)." + `\n\n ${code}`, [{
+        role: "assistant",
+        content: "你是一名程序员，能够向用户解释代码"
+    }]);
     return response;
 }
 
